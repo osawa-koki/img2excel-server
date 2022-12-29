@@ -41,6 +41,7 @@ const Img2ExcelPage = () => {
     })
     .catch((err: Error): void => {
       console.log(err);
+      setJimp(null);
       setError("画像ファイルのMIME対応が不正です。\nPNG・GIF・JPEG・WEBPのいずれかのファイルを指定して下さい。");
       DrawInit();
     });
