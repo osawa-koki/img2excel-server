@@ -6,13 +6,17 @@ import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import LinearProgress from '@mui/material/LinearProgress';
 import CircularProgress from '@mui/material/CircularProgress';
+import TextField from '@mui/material/TextField';
 
 import File2Jimp from '../common/File2Jimp';
 import Layout from '../components/Layout';
 import Setting from '../setting';
 
 const Img2ExcelPage = () => {
+
   let [jimp, setJimp] = useState<Jimp | null>(null);
+  let [excelblob, setExcelBlob] = useState<Blob | null>(1);
+  let [filename, setFilename] = useState<string>('img2excel');
   let [error, setError] = useState<string | null>(null);
   let [loading, setLoading] = useState(false);
   let [sending, setSending] = useState(true);
@@ -36,6 +40,16 @@ const Img2ExcelPage = () => {
       return;
     }
     const file = files[0];
+    const rawname = file.name;
+    const splitted_name = rawname.split('.');
+    if (splitted_name.length === 1) {
+      setError("画像ファイルの拡張子が不正です。\nPNG・GIF・JPEG・WEBPのいずれかのファイルを指定して下さい。");
+      DrawInit();
+      setLoading(false);
+      return;
+    }
+    splitted_name.pop();
+    setFilename(splitted_name.join('.'));
     await File2Jimp(file)
     .then((jimp: Jimp): void => {
       setJimp(jimp);
@@ -79,9 +93,9 @@ const Img2ExcelPage = () => {
       },
       body: blob,
     })
-    .then(response => response.text())
+    .then(response => response.blob())
     .then(response => {
-      console.log(response);
+      setExcelBlob(response);
     });
     setSending(false);
   }
@@ -143,6 +157,16 @@ const Img2ExcelPage = () => {
                 <CircularProgress color="success" />
                 <CircularProgress color="inherit" />
               </Stack>
+            </div>
+          }
+          {
+            excelblob &&
+            <div id='ExcelBlob'>
+              <Alert className='Info' severity="success">Convertion to 'Excel' successed!<br />Download by clicking button below.</Alert>
+              <TextField variant="outlined" value={filename} onInput={(e) => {(e.target as HTMLInputElement).value}} />
+              <Button href={URL.createObjectURL(new Blob(["Hello, blob!"], {type: 'text/plain'}))} download={`${filename}.xlsx`} variant="outlined" >
+                Download
+              </Button>
             </div>
           }
         </div>
