@@ -31,8 +31,7 @@ const Layout = ({ children, title = Setting.title }: Props) => (
     <main>
       {children}
     </main>
-    <footer>
-    </footer>
+    <footer>Img2Excel&nbsp;<a href='https://github.com/osawa-koki'>@osawa-koki</a></footer>
   </div>
 );
 
