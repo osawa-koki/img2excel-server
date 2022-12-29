@@ -6,10 +6,10 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["img2excel-server/img2excel-server.csproj", "img2excel-server/"]
-RUN dotnet restore "img2excel-server/img2excel-server.csproj"
+COPY ["src/img2excel-server.csproj", "src/"]
+RUN dotnet restore "src/img2excel-server.csproj"
 COPY . .
-WORKDIR "/src/img2excel-server"
+WORKDIR "/src/src"
 RUN dotnet build "img2excel-server.csproj" -c Release -o /app/build
 
 FROM build AS publish
