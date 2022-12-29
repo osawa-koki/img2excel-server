@@ -27,6 +27,7 @@ const Img2ExcelPage = () => {
   };
 
   async function Import(files: FileList): Promise<void> {
+    setLoading(true);
     setError(null);
     if (files.length === 0) {
       return;
@@ -42,6 +43,7 @@ const Img2ExcelPage = () => {
       setError("画像ファイルのMIME対応が不正です。\nPNG・GIF・JPEG・WEBPのいずれかのファイルを指定して下さい。");
       DrawInit();
     });
+    setLoading(false);
   };
 
   function DrawInit(): void {
