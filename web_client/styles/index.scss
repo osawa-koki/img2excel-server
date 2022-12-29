@@ -11,10 +11,15 @@
     p {
       margin-top: 1rem;
     }
-    img {
-      margin-top: 1rem;
-      width: 300px;
-      max-width: 100%;
+    #Fruits {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      img {
+        margin: 1rem;
+        width: 300px;
+        max-width: 100%;
+      }
     }
   }
 }

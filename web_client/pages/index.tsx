@@ -9,7 +9,13 @@ const IndexPage = () => (
         <div id='MainTopic'>
           <h1>Hello {Setting.title} 👋</h1>
           <p>画像ファイルをExcelファイルに変換するお遊びツールです。</p>
-          <img src={`${Setting.basePath}/fruit.gif`} alt="Img2Excel" />
+          <div id='Fruits'>
+            {
+              ['tanuki', 'tako', 'suzume'].map((fruit, index) => (
+                <img key={index} src={`${Setting.basePath}/${fruit}.gif`} alt="Img2Excel" />
+              ))
+            }
+          </div>
         </div>
       </div>
     </div>
