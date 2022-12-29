@@ -18,4 +18,4 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/", () => "Hello World!");
 
-app.Run();
+app.Run("http://+:80");
