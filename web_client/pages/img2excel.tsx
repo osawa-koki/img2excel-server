@@ -15,11 +15,11 @@ import Setting from '../setting';
 const Img2ExcelPage = () => {
 
   let [jimp, setJimp] = useState<Jimp | null>(null);
-  let [excelblob, setExcelBlob] = useState<Blob | null>(1);
+  let [excelblob, setExcelBlob] = useState<Blob | null>(null);
   let [filename, setFilename] = useState<string>('img2excel');
   let [error, setError] = useState<string | null>(null);
   let [loading, setLoading] = useState(false);
-  let [sending, setSending] = useState(true);
+  let [sending, setSending] = useState(false);
 
   function Draw(jimp: Jimp): void {
     const canvas = document.getElementById('MyCanvas') as HTMLCanvasElement;
@@ -164,7 +164,7 @@ const Img2ExcelPage = () => {
             <div id='ExcelBlob'>
               <Alert className='Info' severity="success">Convertion to 'Excel' successed!<br />Download by clicking button below.</Alert>
               <TextField variant="outlined" value={filename} onInput={(e) => {(e.target as HTMLInputElement).value}} />
-              <Button href={URL.createObjectURL(new Blob(["Hello, blob!"], {type: 'text/plain'}))} download={`${filename}.xlsx`} variant="outlined" >
+              <Button href={window.URL.createObjectURL(new Blob([excelblob], {type: "application/Zip"}))} download={`${filename}.xlsx`} variant="outlined" >
                 Download
               </Button>
             </div>
