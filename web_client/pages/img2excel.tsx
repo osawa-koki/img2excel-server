@@ -9,18 +9,13 @@ import File2Jimp from '../common/File2Jimp';
 import Layout from '../components/Layout';
 
 const Img2ExcelPage = () => {
-
-  let canvasRef: HTMLCanvasElement | null = null;
-
   let [jimp, setJimp] = useState<Jimp | null>(null);
   let [error, setError] = useState<string | null>(null);
   let [loading, setLoading] = useState(false);
 
   function Draw(jimp: Jimp): void {
-    const canvas = this.CanvasRef.current;
-    if (canvas === null) return;
+    const canvas = document.getElementById('MyCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
-    if (ctx === null) return;
     const width = jimp.bitmap.width;
     const height = jimp.bitmap.height;
     canvas.width = width;
@@ -31,12 +26,14 @@ const Img2ExcelPage = () => {
   };
 
   async function Import(files: FileList): Promise<void> {
+    setError(null);
     if (files.length === 0) {
       console.log(files);
       return;
     }
     const file = files[0];
-    console.log(file)
+    console.log(`\n\n\n`);
+    console.log(file);
     await File2Jimp(file)
     .then((jimp: Jimp): void => {
       setJimp(jimp);
@@ -44,24 +41,18 @@ const Img2ExcelPage = () => {
     })
     .catch((err: Error): void => {
       console.log(err);
-      window.alert("画像ファイルのMIME対応が不正です。\nPNG・GIF・JPEG・WEBPのいずれかのファイルを指定して下さい。");
+      setError("画像ファイルのMIME対応が不正です。\nPNG・GIF・JPEG・WEBPのいずれかのファイルを指定して下さい。");
+      DrawInit();
     });
   };
 
-  useEffect(() => {
-    canvasRef = document.getElementById('MyCanvas') as HTMLCanvasElement;
-    const canvas = canvasRef;
-    if (canvas === null) {
-      setError('Service unavailable... (canvas is null.)');
-      return;
-    }
+  function DrawInit(): void {
+    const canvas = document.getElementById('MyCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
-    if (ctx === null) {
-      setError('Service unavailable... (ctx is null.)');
-      return;
-    }
     const width = 400;
     const height = 300;
+    canvas.width = width;
+    canvas.height = height;
     const step = 20;
     const hue_random = Math.floor(Math.random() * 360);
     for (let x = 0; x < width; x += step) {
@@ -70,6 +61,20 @@ const Img2ExcelPage = () => {
         ctx.fillRect(x, y, step, step);
       }
     }
+  }
+
+  useEffect(() => {
+    const canvas = document.getElementById('MyCanvas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d');
+    if (canvas === null) {
+      setError('Service unavailable... (canvas is null.)');
+      return;
+    }
+    if (ctx === null) {
+      setError('Service unavailable... (ctx is null.)');
+      return;
+    }
+    DrawInit();
   }, []);
 
   return (
