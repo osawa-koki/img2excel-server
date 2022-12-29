@@ -23,7 +23,7 @@ const Img2ExcelPage = () => {
 
   function Draw(jimp: Jimp): void {
     const canvas = document.getElementById('MyCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     const width = jimp.bitmap.width;
     const height = jimp.bitmap.height;
     canvas.width = width;
@@ -65,7 +65,7 @@ const Img2ExcelPage = () => {
 
   function DrawInit(): void {
     const canvas = document.getElementById('MyCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     const width = 400;
     const height = 300;
     canvas.width = width;
@@ -121,7 +121,7 @@ const Img2ExcelPage = () => {
         <div id='Img2Excel'>
           <Form.Group>
             <Form.Label>Send image file to convert to "Excel".</Form.Label>
-            <Form.Control type="file" onInput={(e) => {Import((e.target as HTMLInputElement).files)}} disabled={loading} />
+            <Form.Control type="file" onInput={(e) => {Import((e.target as HTMLInputElement).files as FileList)}} disabled={loading} />
           </Form.Group>
           {
             error &&
