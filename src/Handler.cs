@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 internal static class Img2Excel
 {
-  const int maximumImageSize = 100_000;
+  const int maximumImageSize = 1_000_000;
   private static readonly MD5 hasher = MD5.Create();
   private static readonly List<string> cache = new();
   
@@ -46,7 +46,7 @@ internal static class Img2Excel
       // Excelブックを作成する。
       XLWorkbook book = new();
 
-      using Image<Rgba32> image = (Image<Rgba32>)Image.Load(imageBytes);
+      using Image<Rgba32> image = Image.Load<SixLabors.ImageSharp.PixelFormats.Rgba32>(imageBytes);
 
       // リサイズ処理
       // image.Mutate(x => x.Resize(image.Width / 2, image.Height / 2));

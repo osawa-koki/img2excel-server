@@ -5,14 +5,17 @@ import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import LinearProgress from '@mui/material/LinearProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import File2Jimp from '../common/File2Jimp';
 import Layout from '../components/Layout';
+import Setting from '../setting';
 
 const Img2ExcelPage = () => {
   let [jimp, setJimp] = useState<Jimp | null>(null);
   let [error, setError] = useState<string | null>(null);
   let [loading, setLoading] = useState(false);
+  let [sending, setSending] = useState(true);
 
   function Draw(jimp: Jimp): void {
     const canvas = document.getElementById('MyCanvas') as HTMLCanvasElement;
@@ -63,6 +66,26 @@ const Img2ExcelPage = () => {
     }
   }
 
+  async function Send() {
+    if (jimp === null) {
+      return;
+    }
+    setSending(true);
+    const blob = await jimp.getBufferAsync(Jimp.MIME_JPEG);
+    await fetch(`${Setting.apiUri}/img2excel`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'image/png',
+      },
+      body: blob,
+    })
+    .then(response => response.text())
+    .then(response => {
+      console.log(response);
+    });
+    setSending(false);
+  }
+
   useEffect(() => {
     const canvas = document.getElementById('MyCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
@@ -109,7 +132,17 @@ const Img2ExcelPage = () => {
           {
             jimp &&
             <div id='Converter'>
-              <Button variant="contained">Convert</Button>
+              <Button variant="contained" onClick={() => {Send();}}>Convert</Button>
+            </div>
+          }
+          {
+            sending &&
+            <div id='Sending'>
+              <Stack id='SendingLoader' sx={{ color: 'grey.500' }} spacing={2} direction="row">
+                <CircularProgress color="secondary" />
+                <CircularProgress color="success" />
+                <CircularProgress color="inherit" />
+              </Stack>
             </div>
           }
         </div>
