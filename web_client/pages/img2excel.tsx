@@ -77,7 +77,6 @@ const Img2ExcelPage = () => {
 
   async function Send() {
     setSending(true);
-    let blob;
     (document.getElementById("MyCanvas") as HTMLCanvasElement).toBlob(async (blob) => {
       await fetch(`${Setting.apiUri}/img2excel`, {
         method: 'POST',
