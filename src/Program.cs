@@ -32,10 +32,20 @@ app.UseCors(MyCORS);
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
+var img2excel = File.ReadAllText("./wwwroot/img2excel.html");
+var about = File.ReadAllText("./wwwroot/about.html");
+
+// SSG(Nextjs)のリロード用
+app.MapGet("/img2excel", () => Results.Text(img2excel, "text/html"));
+app.MapGet("/about", () => Results.Text(about, "text/html"));
+
 var api = app.MapGroup("/api");
 {
+  // API
   api.MapGet("/img2excel/{key}", Img2Excel.Get);
   api.MapPost("/img2excel", Img2Excel.Create);
+
+  // イロイロテストしたい時用
   var debug = api.MapGroup("/debug");
   {
     debug.MapGet("/hello", () => "Hello GET!");
