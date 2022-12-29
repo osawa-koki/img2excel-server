@@ -32,14 +32,14 @@ internal static class Handler
 
     // 受け取ったバイト配列のハッシュ値を計算
     var hashed = hasher.ComputeHash(imageBytes);
-    var hash = BitConverter.ToString(hashed).Replace("-", "");
+    var hash = BitConverter.ToString(hashed).Replace("-", "")[..8];
 
-    string? fileName = null;
-
+    string? fileName = $"{hash}.xlsx";
+    
     // キャッシュにハッシュ値が存在するか確認
     if (cache.Contains(hash))
     {
-      fileName = $"{hash[..8]}.xlsx";
+      // それを使用する
     }
 
     // キャッシュに存在しなければ画像を解析してキャッシュに追加
@@ -48,7 +48,7 @@ internal static class Handler
       // Excelブックを作成する。
       XLWorkbook book = new();
 
-      using Image<Rgba32> image = (Image<Rgba32>)SixLabors.ImageSharp.Image.Load(imageBytes);
+      using Image<Rgba32> image = (Image<Rgba32>)Image.Load(imageBytes);
 
       // リサイズ処理
       // image.Mutate(x => x.Resize(image.Width / 2, image.Height / 2));
@@ -72,14 +72,18 @@ internal static class Handler
         for (int y = 1; y <= height; y++)
         {
           Color color = image[x-1, y-1];
-          string hex = color.ToHex();
+          string hex = color.ToHex()[..6];
           sheet.Cell(y, x).Style.Fill.BackgroundColor = XLColor.FromHtml($"#{hex}");
         }
       }
 
-      // Excelブックを保存保存する。
-      book.SaveAs($"./.cache/{hash}.xlsx");
+      // Excelブックを保存する。
+      cache.Add(hash);
+      book.SaveAs($"./.cache/{fileName}");
     }
+
+    response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    response.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
 
 
   }
