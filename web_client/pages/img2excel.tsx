@@ -29,19 +29,15 @@ const Img2ExcelPage = () => {
   async function Import(files: FileList): Promise<void> {
     setError(null);
     if (files.length === 0) {
-      console.log(files);
       return;
     }
     const file = files[0];
-    console.log(`\n\n\n`);
-    console.log(file);
     await File2Jimp(file)
     .then((jimp: Jimp): void => {
       setJimp(jimp);
       Draw(jimp);
     })
     .catch((err: Error): void => {
-      console.log(err);
       setJimp(null);
       setError("画像ファイルのMIME対応が不正です。\nPNG・GIF・JPEG・WEBPのいずれかのファイルを指定して下さい。");
       DrawInit();
