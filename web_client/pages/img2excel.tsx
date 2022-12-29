@@ -78,20 +78,21 @@ const Img2ExcelPage = () => {
   async function Send() {
     setSending(true);
     let blob;
-    (document.getElementById("MyCanvas") as HTMLCanvasElement).toBlob((b) => {blob = b;});
-    await fetch(`${Setting.apiUri}/img2excel`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'image/png',
-      },
-      body: blob,
-    })
-    .then(response => response.blob())
-    .then(response => {
-      console.log(`byte -> ${blob.byteLength}`);
-      setExcelBlob(response);
+    (document.getElementById("MyCanvas") as HTMLCanvasElement).toBlob(async (blob) => {
+      await fetch(`${Setting.apiUri}/img2excel`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'image/png',
+        },
+        body: blob,
+      })
+      .then(response => response.blob())
+      .then(response => {
+        console.log(`byte -> ${blob.size}`);
+        setExcelBlob(response);
+      });
+      setSending(false);
     });
-    setSending(false);
   }
 
   useEffect(() => {
