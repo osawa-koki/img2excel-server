@@ -95,6 +95,7 @@ const Img2ExcelPage = () => {
     })
     .then(response => response.blob())
     .then(response => {
+      console.log(`byte -> ${blob.byteLength}`);
       setExcelBlob(response);
     });
     setSending(false);

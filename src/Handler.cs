@@ -77,15 +77,15 @@ internal static class Img2Excel
 
       // Excelブックを保存する。
       cache.Add(hash);
-      book.SaveAs($"./.cache/{fileName}");
+      book.SaveAs($"./wwwroot/.cache/{fileName}");
     }
 
     response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     response.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
 
     response.StatusCode = 201;
-    //await response.SendFileAsync($"./.cache/{fileName}");
-    return Results.Created($"./?key={hash}", File.ReadAllBytes($"./.cache/{fileName}"));
+    response.Headers.Add("location", $"https://{request.Host}/.cache/{fileName}");
+    return Results.File($"./.cache/{fileName}");
   }
 
   internal static IResult Get(string key, HttpResponse response)
