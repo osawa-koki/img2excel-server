@@ -59,7 +59,7 @@ internal static class Img2Excel
 
       // ワークシートを追加する。
       IXLWorksheet sheet = book.Worksheets.Add(sheet_name);
-
+      
       // 行の高さをまとめて変更する。
       sheet.Rows(1, width).Height = 4.5;
       // 列の幅をまとめて変更する。
