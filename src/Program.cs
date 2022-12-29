@@ -18,7 +18,8 @@ app.UseStaticFiles();
 
 var api = app.MapGroup("/api");
 {
-  api.MapPost("/img2excel", Handler.Img2Excel);
+  api.MapGet("/img2excel/{key}", Img2Excel.Get);
+  api.MapPost("/img2excel", Img2Excel.Create);
   var debug = api.MapGroup("/debug");
   {
     debug.MapGet("/hello", () => "Hello GET!");
