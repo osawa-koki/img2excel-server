@@ -8,4 +8,21 @@
     border-radius: 0.5rem;
   }
 
+  #Error {
+    margin-top: 1rem;
+  }
+
+  #JimpImage {
+    margin: 1rem 0;
+    padding: 1rem;
+    border: 1px lightgray solid;
+    border-radius: 0.5rem;
+    #MyCanvas {
+      display: block;
+      margin: 1rem auto;
+      border: 1px lightgray solid;
+      border-radius: 0.5rem;
+    }
+  }
+
 }
