@@ -1,4 +1,7 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+FROM node:19-bullseye-slim AS web_client
+WORKDIR /usr/src/app
+COPY ./web_client ./web_client
+RUN cd web_client && yarn install && yarn build
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
@@ -8,7 +11,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["src/img2excel-server.csproj", "src/"]
 RUN dotnet restore "src/img2excel-server.csproj"
-COPY . .
+COPY ./src ./src
 WORKDIR "/src/src"
 RUN dotnet build "img2excel-server.csproj" -c Release -o /app/build
 
@@ -17,5 +20,6 @@ RUN dotnet publish "img2excel-server.csproj" -c Release -o /app/publish /p:UseAp
 
 FROM base AS final
 WORKDIR /app
+COPY --from=WEB_CLIENT /usr/src/app/web_client/dist ./wwwroot
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "img2excel-server.dll"]
