@@ -32,12 +32,12 @@ app.UseCors(MyCORS);
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
+// SSG(Nextjs)のリロード用
+app.MapGet("/img2excel", () => { Results.File("./img2excel.html"); });
+app.MapGet("/about", () => { Results.File("./about.html"); });
+
 var api = app.MapGroup("/api");
 {
-  // SSG(Nextjs)のリロード用
-  api.MapGet("/img2excel", () => { Results.File("./img2excel.html"); });
-  api.MapGet("/about", () => { Results.File("./about.html"); });
-
   // API
   api.MapGet("/img2excel/{key}", Img2Excel.Get);
   api.MapPost("/img2excel", Img2Excel.Create);
