@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.2.3",
+    "jimp": "^0.16.2",
     "next": "latest",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.0",
