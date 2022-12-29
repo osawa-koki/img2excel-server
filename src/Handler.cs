@@ -84,7 +84,7 @@ internal static class Img2Excel
     response.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
 
     response.StatusCode = 201;
-    response.Headers.Add("location", $"https://{request.Host}/.cache/{fileName}");
+    response.Headers.Add("location", $"{(request.IsHttps ? "https" : "http")}{request.Host}/.cache/{fileName}");
     return Results.File($"./.cache/{fileName}");
   }
 
