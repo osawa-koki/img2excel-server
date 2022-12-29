@@ -1,5 +1,17 @@
 var builder = WebApplication.CreateBuilder(args);
 
+#if DEBUG
+var MyCORS = "MyCORS";
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy(name: MyCORS,
+  policy =>
+  {
+    policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
+  });
+});
+#endif
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -13,11 +25,17 @@ if (app.Environment.IsDevelopment())
   app.UseSwaggerUI();
 }
 
+#if DEBUG
+app.UseCors(MyCORS);
+#endif
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
 var api = app.MapGroup("/api");
 {
+  api.MapGet("/img2excel/{key}", Img2Excel.Get);
+  api.MapPost("/img2excel", Img2Excel.Create);
   var debug = api.MapGroup("/debug");
   {
     debug.MapGet("/hello", () => "Hello GET!");
