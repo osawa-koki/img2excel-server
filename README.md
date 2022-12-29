@@ -44,3 +44,18 @@ docker build -t img2excel-server . && docker run -p 80:80 -it --rm --name my-img
 | Dockerfile Path | ./Dockerfile |
 | Docker Build Context Directory |  |
 | Docker Command |  |
+
+## イロイロ
+
+### Bitmap
+
+[スタンドアロンプログラム](https://github.com/osawa-koki/img2excel)ではBitmapを使用していましたが、ここでは使用をやめました。  
+.NET6.0からBitmapクラスは非推奨だからです。  
+
+> .NET 6 以降のバージョンでは、この種類を含む System.Drawing.Common パッケージは Windows オペレーティング システムでのみサポートされています。 クロスプラットフォーム アプリでこの型を使用すると、コンパイル時の警告と実行時例外が発生します。 詳細については、「 Windows でのみサポートされる System.Drawing.Common」を参照してください。
+> <https://learn.microsoft.com/ja-jp/dotnet/api/system.drawing.bitmap?view=dotnet-plat-ext-7.0>
+
+簡単に説明するとWindows以外でも使用する場合には使うなということです。  
+ここではDockerを使用することを全体としているため、代わりに[ImageSharp](https://sixlabors.com/products/imagesharp/)を使用しています。  
+
+Bitmap以上に複雑な処理ができるので非常に便利です。  
