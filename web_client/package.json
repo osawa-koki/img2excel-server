@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "next",
-    "build": "next build && next export -o dist",
+    "build": "next build && next export -o ./dist",
     "start": "next start",
     "type-check": "tsc"
   },
@@ -11,7 +11,6 @@
     "@emotion/styled": "^11.10.5",
     "@mui/material": "^5.11.2",
     "bootstrap": "^5.2.3",
-    "jimp": "^0.16.2",
     "next": "latest",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.0",

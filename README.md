@@ -20,7 +20,7 @@ docker build -t img2excel-server . && docker run -p 80:80 -it --rm --name my-img
 
 | キー | バリュー |
 | ---- | ---- |
-| Name | img2excel-server |
+| Name | img2excel |
 | Region | Oregon(US West) |
 | Branch | main |
 | Root Directory |  |

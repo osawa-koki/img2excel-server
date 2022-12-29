@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
-import Jimp from 'jimp/browser/lib/jimp';
 import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
@@ -8,29 +7,34 @@ import LinearProgress from '@mui/material/LinearProgress';
 import CircularProgress from '@mui/material/CircularProgress';
 import TextField from '@mui/material/TextField';
 
-import File2Jimp from '../common/File2Jimp';
 import Layout from '../components/Layout';
 import Setting from '../setting';
 
 const Img2ExcelPage = () => {
 
-  let [jimp, setJimp] = useState<Jimp | null>(null);
+  let [imported, setImported] = useState<boolean>(false);
   let [excelblob, setExcelBlob] = useState<Blob | null>(null);
   let [filename, setFilename] = useState<string>('img2excel');
   let [error, setError] = useState<string | null>(null);
   let [loading, setLoading] = useState(false);
   let [sending, setSending] = useState(false);
 
-  function Draw(jimp: Jimp): void {
-    const canvas = document.getElementById('MyCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-    const width = jimp.bitmap.width;
-    const height = jimp.bitmap.height;
-    canvas.width = width;
-    canvas.height = height;
-    const imageData = ctx.createImageData(width, height);
-    imageData.data.set(jimp.bitmap.data);
-    ctx.putImageData(imageData, 0, 0);
+  const File2Canvas = async (file: File) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = function() {
+      const data = reader.result;
+      const canvas = document.getElementById('MyCanvas') as HTMLCanvasElement;
+      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+      const image = new Image();
+      image.src = data as string;
+      image.onload = () => {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        ctx.drawImage(image, 0, 0);
+        setImported(true);
+      }
+    }
   };
 
   async function Import(files: FileList): Promise<void> {
@@ -50,22 +54,13 @@ const Img2ExcelPage = () => {
     }
     splitted_name.pop();
     setFilename(splitted_name.join('.'));
-    await File2Jimp(file)
-    .then((jimp: Jimp): void => {
-      setJimp(jimp);
-      Draw(jimp);
-    })
-    .catch((err: Error): void => {
-      setJimp(null);
-      setError("画像ファイルのMIME対応が不正です。\nPNG・GIF・JPEG・WEBPのいずれかのファイルを指定して下さい。");
-      DrawInit();
-    });
+    await File2Canvas(file);
     setLoading(false);
   };
 
   function DrawInit(): void {
     const canvas = document.getElementById('MyCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     const width = 400;
     const height = 300;
     canvas.width = width;
@@ -81,24 +76,22 @@ const Img2ExcelPage = () => {
   }
 
   async function Send() {
-    if (jimp === null) {
-      return;
-    }
     setSending(true);
-    const blob = await jimp.getBufferAsync(Jimp.MIME_JPEG);
-    await fetch(`${Setting.apiUri}/img2excel`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'image/png',
-      },
-      body: blob,
-    })
-    .then(response => response.blob())
-    .then(response => {
-      console.log(`byte -> ${blob.byteLength}`);
-      setExcelBlob(response);
+    (document.getElementById("MyCanvas") as HTMLCanvasElement).toBlob(async (blob) => {
+      await fetch(`${Setting.apiUri}/img2excel`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'image/png',
+        },
+        body: blob,
+      })
+      .then(response => response.blob())
+      .then(response => {
+        console.log(`byte -> ${blob.size}`);
+        setExcelBlob(response);
+      });
+      setSending(false);
     });
-    setSending(false);
   }
 
   useEffect(() => {
@@ -121,7 +114,7 @@ const Img2ExcelPage = () => {
         <div id='Img2Excel'>
           <Form.Group>
             <Form.Label>Send image file to convert to "Excel".</Form.Label>
-            <Form.Control type="file" onInput={(e) => {Import((e.target as HTMLInputElement).files)}} disabled={loading} />
+            <Form.Control type="file" onInput={(e) => {Import((e.target as HTMLInputElement).files as FileList)}} disabled={loading} />
           </Form.Group>
           {
             error &&
@@ -145,7 +138,7 @@ const Img2ExcelPage = () => {
             </div>
           }
           {
-            jimp &&
+            imported &&
             <div id='Converter'>
               <Button variant="contained" onClick={() => {Send();}}>Convert</Button>
             </div>
