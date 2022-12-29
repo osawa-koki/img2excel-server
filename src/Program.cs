@@ -1,8 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddAuthorization();
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -16,6 +13,21 @@ if (app.Environment.IsDevelopment())
   app.UseSwaggerUI();
 }
 
-app.MapGet("/", () => "Hello World!");
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+var api = app.MapGroup("/api");
+{
+  var debug = api.MapGroup("/debug");
+  {
+    debug.MapGet("/hello", () => "Hello GET!");
+    debug.MapGet("/hello/{name}", (string name) => $"Hello GET {name}!");
+    debug.MapPost("/hello", (string name) => $"Hello POST {name}!");
+    debug.MapPut("/hello", (string name) => $"Hello PUT {name}!");
+    debug.MapDelete("/hello", (string name) => $"Hello DELETE {name}!");
+  }
+}
+
+app.UseRouting();
 
 app.Run("http://+:80");
