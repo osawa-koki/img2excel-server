@@ -30,18 +30,23 @@ const Img2ExcelPage = () => {
     ctx.putImageData(imageData, 0, 0);
   };
 
-  // async function FileDropped(acceptedFiles: File[]): Promise<void> {
-  //   const file = acceptedFiles[0];
-  //   await File2Jimp(file)
-  //   .then((jimp: Jimp): void => {
-  //     setJimp(jimp);
-  //     Draw(jimp);
-  //   })
-  //   .catch((err: Error): void => {
-  //     console.log(err);
-  //     window.alert("画像ファイルのMIME対応が不正です。\nPNG・GIF・JPEG・WEBPのいずれかのファイルを指定して下さい。");
-  //   });
-  // };
+  async function Import(files: FileList): Promise<void> {
+    if (files.length === 0) {
+      console.log(files);
+      return;
+    }
+    const file = files[0];
+    console.log(file)
+    await File2Jimp(file)
+    .then((jimp: Jimp): void => {
+      setJimp(jimp);
+      Draw(jimp);
+    })
+    .catch((err: Error): void => {
+      console.log(err);
+      window.alert("画像ファイルのMIME対応が不正です。\nPNG・GIF・JPEG・WEBPのいずれかのファイルを指定して下さい。");
+    });
+  };
 
   useEffect(() => {
     canvasRef = document.getElementById('MyCanvas') as HTMLCanvasElement;
@@ -73,7 +78,7 @@ const Img2ExcelPage = () => {
         <div id='Img2Excel'>
           <Form.Group>
             <Form.Label>Send image file to convert to "Excel".</Form.Label>
-            <Form.Control type="file" disabled={loading} />
+            <Form.Control type="file" onInput={(e) => {Import((e.target as HTMLInputElement).files)}} disabled={loading} />
           </Form.Group>
           {
             error &&
