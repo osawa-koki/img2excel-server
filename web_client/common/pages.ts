@@ -13,7 +13,7 @@ const _pages: _Page[] = [
   },
   {
     name: "Img2Excel",
-    path: "/",
+    path: "/img2excel",
     is_active: true,
   },
   {
