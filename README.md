@@ -25,6 +25,6 @@ docker build -t img2excel-server . && docker run -p 80:80 -it --rm --name my-img
 | Branch | main |
 | Root Directory |  |
 | Environment | Docker |
-| Dockerfile Path | ./src/Dockerfile |
+| Dockerfile Path | ./Dockerfile |
 | Docker Build Context Directory |  |
 | Docker Command |  |
