@@ -34,8 +34,15 @@ app.UseStaticFiles();
 
 var api = app.MapGroup("/api");
 {
+  // SSG(Nextjs)のリロード用
+  api.MapGet("/img2excel", () => { Results.File("./img2excel.html"); });
+  api.MapGet("/about", () => { Results.File("./about.html"); });
+
+  // API
   api.MapGet("/img2excel/{key}", Img2Excel.Get);
   api.MapPost("/img2excel", Img2Excel.Create);
+
+  // イロイロテストしたい時用
   var debug = api.MapGroup("/debug");
   {
     debug.MapGet("/hello", () => "Hello GET!");
