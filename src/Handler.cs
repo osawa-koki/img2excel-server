@@ -2,19 +2,17 @@
 // https://learn.microsoft.com/ja-jp/aspnet/core/fundamentals/minimal-apis?view=aspnetcore-7.0
 
 using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Office2016.Excel;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using System.IO;
 using System.Security.Cryptography;
 
-internal static class Handler
+internal static class Img2Excel
 {
   const int maximumImageSize = 100_000;
   private static readonly MD5 hasher = MD5.Create();
   private static readonly List<string> cache = new();
-
-  async internal static Task Img2Excel(HttpRequest request, HttpResponse response)
+  
+  async internal static Task<IResult> Create(HttpRequest request, HttpResponse response)
   {
 
     var bytes = new byte[maximumImageSize];
@@ -26,7 +24,7 @@ internal static class Handler
     {
       response.StatusCode = 413;
       await response.WriteAsync("Image size is too large.");
-      return;
+      return await Task.FromResult<IResult>(Results.BadRequest());
     }
 
 
@@ -85,8 +83,27 @@ internal static class Handler
     response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     response.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
 
-    var fs = new FileStream($"./.cache/{fileName}", FileMode.Open, FileAccess.Read);
-    await fs.CopyToAsync(response.Body);
+    response.StatusCode = 201;
+    //await response.SendFileAsync($"./.cache/{fileName}");
+    return Results.Created($"./?key={hash}", File.ReadAllBytes($"./.cache/{fileName}"));
+  }
 
+  internal static IResult Get(string key, HttpResponse response)
+  {
+    try
+    {
+      if (cache.Contains(key) == false)
+      {
+        return Results.NotFound();
+      }
+
+      response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+      response.Headers.Add("Content-Disposition", $"attachment; filename={key}.xlsx");
+
+      return Results.Ok(File.ReadAllBytes($"./.cache/{key}.xlsx"));
+    } catch (Exception)
+    {
+      return Results.NotFound();
+    }
   }
 }
