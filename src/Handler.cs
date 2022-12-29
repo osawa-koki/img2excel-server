@@ -85,6 +85,8 @@ internal static class Handler
     response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     response.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
 
+    var fs = new FileStream($"./.cache/{fileName}", FileMode.Open, FileAccess.Read);
+    await fs.CopyToAsync(response.Body);
 
   }
 }
