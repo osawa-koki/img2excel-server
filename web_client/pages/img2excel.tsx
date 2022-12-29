@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Jimp from 'jimp/browser/lib/jimp';
 import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
 import LinearProgress from '@mui/material/LinearProgress';
 
 import File2Jimp from '../common/File2Jimp';
@@ -103,9 +104,14 @@ const Img2ExcelPage = () => {
             </div>
           }
           {
-            //jimp &&
             <div id='JimpImage'>
               <canvas id='MyCanvas'></canvas>
+            </div>
+          }
+          {
+            jimp &&
+            <div id='Converter'>
+              <Button variant="contained">Convert</Button>
             </div>
           }
         </div>
