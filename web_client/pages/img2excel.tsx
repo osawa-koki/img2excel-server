@@ -46,8 +46,8 @@ const Img2ExcelPage = () => {
     const file = files[0];
     const rawname = file.name;
     const splitted_name = rawname.split('.');
-    if (splitted_name.length === 1) {
-      setError("画像ファイルの拡張子が不正です。\nPNG・GIF・JPEG・WEBPのいずれかのファイルを指定して下さい。");
+    if (splitted_name.length === 1 || /^(png|gif|jpe?g|webp|ico)$/i.test(splitted_name[splitted_name.length - 1]) === false) {
+      setError("画像ファイルの拡張子が不正です。\nPNG・GIF・JPEG・WEBP・ICOのいずれかのファイルを指定して下さい。");
       DrawInit();
       setLoading(false);
       return;
@@ -87,7 +87,6 @@ const Img2ExcelPage = () => {
       })
       .then(response => response.blob())
       .then(response => {
-        console.log(`byte -> ${blob.size}`);
         setExcelBlob(response);
       });
       setSending(false);
@@ -156,7 +155,7 @@ const Img2ExcelPage = () => {
           {
             excelblob &&
             <div id='ExcelBlob'>
-              <Alert className='Info' severity="success">Convertion to 'Excel' successed!<br />Download by clicking button below.</Alert>
+              <Alert className='Info' severity="success">Convertion to 'Excel' successed!<br />Download by clicking a button below.</Alert>
               <TextField variant="outlined" value={filename} onInput={(e) => {(e.target as HTMLInputElement).value}} />
               <Button href={window.URL.createObjectURL(new Blob([excelblob], {type: "application/Zip"}))} download={`${filename}.xlsx`} variant="outlined" >
                 Download
