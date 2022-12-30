@@ -32,7 +32,7 @@ docker run -p 80:80 -it --rm --name my-img2excel-server img2excel-server
 docker build -t img2excel-server . && docker run -p 80:80 -it --rm --name my-img2excel-server img2excel-server
 ```
 
-## デプロイ設定
+## デプロイ設定(Render)
 
 | キー | バリュー |
 | ---- | ---- |
