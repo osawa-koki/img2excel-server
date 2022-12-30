@@ -10,4 +10,5 @@ module.exports = {
   publicRuntimeConfig: {
     basePath: isProd ? SUB_DIRECTORY : "",
   },
+  trailingSlash: true,
 };
