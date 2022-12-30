@@ -54,6 +54,7 @@ const Img2ExcelPage = () => {
       if (splitted_name.length === 1 || /^(png|gif|jpe?g|webp|ico)$/i.test(splitted_name[splitted_name.length - 1]) === false) {
         setError("画像ファイルの拡張子が不正です。\nPNG・GIF・JPEG・WEBP・ICOのいずれかのファイルを指定して下さい。");
         DrawInit();
+        setImported(false);
         setLoading(false);
         return;
       }
@@ -105,7 +106,7 @@ const Img2ExcelPage = () => {
         setSending(false);
       });
     } catch (e) {
-      setError('Service unavailable... (failed to send request.)');
+      setError('Service unavailable... (failed to cenvert to excel.)');
     }
   }
 
