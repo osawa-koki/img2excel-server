@@ -12,7 +12,6 @@ WORKDIR /src
 COPY ./src/img2excel-server.csproj .
 RUN dotnet restore ./img2excel-server.csproj
 COPY ./src .
-WORKDIR /src
 RUN dotnet build ./img2excel-server.csproj -c Release -o /app/build
 
 FROM build AS publish
