@@ -12,6 +12,8 @@ import Setting from '../setting';
 
 const Img2ExcelPage = () => {
 
+  let [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
+  let [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
   let [imported, setImported] = useState<boolean>(false);
   let [excelblob, setExcelBlob] = useState<Blob | null>(null);
   let [filename, setFilename] = useState<string>('img2excel');
@@ -24,8 +26,6 @@ const Img2ExcelPage = () => {
     reader.readAsDataURL(file)
     reader.onload = function() {
       const data = reader.result;
-      const canvas = document.getElementById('MyCanvas') as HTMLCanvasElement;
-      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
       const image = new Image();
       image.src = data as string;
       image.onload = () => {
@@ -77,7 +77,7 @@ const Img2ExcelPage = () => {
 
   async function Send() {
     setSending(true);
-    (document.getElementById("MyCanvas") as HTMLCanvasElement).toBlob(async (blob) => {
+    canvas.toBlob(async (blob) => {
       await fetch(`${Setting.apiUri}/img2excel`, {
         method: 'POST',
         headers: {
@@ -94,6 +94,10 @@ const Img2ExcelPage = () => {
   }
 
   useEffect(() => {
+    DrawInit();
+  }, [ctx]);
+
+  useEffect(() => {
     const canvas = document.getElementById('MyCanvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
     if (canvas === null) {
@@ -104,7 +108,8 @@ const Img2ExcelPage = () => {
       setError('Service unavailable... (ctx is null.)');
       return;
     }
-    DrawInit();
+    setCanvas(canvas);
+    setCtx(ctx);
   }, []);
 
   return (
