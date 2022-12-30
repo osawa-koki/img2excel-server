@@ -137,7 +137,7 @@ const Img2ExcelPage = () => {
       <div>
         <div id='Img2Excel'>
           <Form.Group>
-            <Form.Label>Send image file to convert to "Excel".</Form.Label>
+            <Form.Label>Select a image file to convert to "Excel".</Form.Label>
             <Form.Control type="file" onInput={(e) => {Import((e.target as HTMLInputElement).files as FileList)}} disabled={loading} />
           </Form.Group>
           {
